@@ -22,6 +22,6 @@ jobs:
       - name: Build all packages
         run: nix develop --command pnpm run build
       - name: Publish to GitHub Packages
-        run: nix develop --command pnpm --filter='./apps/**' publish --no-git-checks --access public --registry https://npm.pkg.github.com
+        run: nix develop --command pnpm --filter='./apps/**' publish --no-git-checks --registry https://npm.pkg.github.com
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
