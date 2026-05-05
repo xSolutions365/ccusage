@@ -196,8 +196,6 @@ export type BlocksReport = v.InferOutput<typeof blocksReportSchema>;
 export type UsageReportRequest = v.InferOutput<typeof usageReportRequestSchema>;
 
 if (import.meta.vitest != null) {
-	const { describe, it, expect } = import.meta.vitest;
-
 	describe('usageReportRequestSchema', () => {
 		it('validates a valid daily report', () => {
 			const validPayload = {

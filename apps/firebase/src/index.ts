@@ -67,8 +67,6 @@ export function handleUsageReport(method: string, body: unknown): HandlerResult 
 }
 
 if (import.meta.vitest != null) {
-	const { describe, it, expect } = import.meta.vitest;
-
 	describe('handleUsageReport', () => {
 		it('rejects non-POST methods', () => {
 			const result = handleUsageReport('GET', {});
