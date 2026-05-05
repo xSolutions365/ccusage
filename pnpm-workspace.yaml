@@ -19,7 +19,7 @@ catalogs:
     vitepress: 2.0.0-alpha.17
     vitepress-plugin-group-icons: ^1.7.2
     vitepress-plugin-llms: ^1.12.0
-    wrangler: ^4.32.0
+    wrangler: ^4.59.1
   lint:
     '@ryoppippi/eslint-config': ^0.4.0
     eslint: ^9.33.0
@@ -38,8 +38,8 @@ catalogs:
   runtime:
     '@antfu/utils': ^9.2.1
     '@hono/mcp': ^0.1.5
-    '@hono/node-server': ^1.19.7
-    '@modelcontextprotocol/sdk': ^1.24.3
+    '@hono/node-server': ^1.19.10
+    '@modelcontextprotocol/sdk': ^1.26.0
     '@praha/byethrow': ^0.6.3
     '@ryoppippi/limo': jsr:^0.2.2
     '@std/async': jsr:^1.0.14
@@ -50,7 +50,7 @@ catalogs:
     fast-sort: ^3.4.1
     get-stdin: ^9.0.0
     gunshi: ^0.26.3
-    hono: ^4.9.2
+    hono: ^4.12.4
     nano-spawn: ^1.0.3
     p-limit: ^7.1.0
     path-type: ^6.0.0
@@ -59,7 +59,7 @@ catalogs:
     string-width: ^7.2.0
     tinyglobby: ^0.2.14
     type-fest: ^4.41.0
-    valibot: ^1.1.0
+    valibot: ^1.2.0
     xdg-basedir: ^5.1.0
     zod: ^4.1.13
   testing:
