@@ -14,13 +14,12 @@ const PLIST_FILENAME = `${PLIST_LABEL}.plist`;
  * Get the current macOS username
  */
 function getUsername(): string {
-	if (process.env.USER) {
+	if (process.env.USER != null && process.env.USER !== '') {
 		return process.env.USER;
 	}
 	try {
 		return execSync('whoami').toString().trim();
-	}
-	catch {
+	} catch {
 		log(pc.yellow('Warning: Could not determine username, using "unknown"'));
 		return 'unknown';
 	}
@@ -32,8 +31,7 @@ function getUsername(): string {
 function getNpxPath(): string {
 	try {
 		return execSync('which npx').toString().trim();
-	}
-	catch {
+	} catch {
 		log(pc.yellow('Warning: npx not found in PATH, using fallback /usr/local/bin/npx'));
 		return '/usr/local/bin/npx';
 	}
@@ -44,7 +42,7 @@ function getNpxPath(): string {
  */
 function generatePlist(npxPath: string, username: string): string {
 	return `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "https://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
 	<key>Label</key>
@@ -98,8 +96,7 @@ function installLaunchAgent(): void {
 	if (existsSync(plistPath)) {
 		try {
 			execSync(`launchctl unload "${plistPath}"`, { stdio: 'ignore' });
-		}
-		catch {
+		} catch {
 			// Ignore errors if not loaded
 		}
 	}
@@ -111,8 +108,7 @@ function installLaunchAgent(): void {
 	// Load the plist
 	try {
 		execSync(`launchctl load "${plistPath}"`);
-	}
-	catch (error) {
+	} catch (error) {
 		const message = error instanceof Error ? error.message : String(error);
 		log(pc.red(`Failed to load launch agent: ${message}`));
 		process.exit(1);

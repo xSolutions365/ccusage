@@ -1,5 +1,5 @@
-import type { LoadOptions } from 'ccusage/data-loader';
-import { getClaudePaths } from 'ccusage/data-loader';
+import type { LoadOptions } from '@xsolutions365/ccusage/data-loader';
+import { getClaudePaths } from '@xsolutions365/ccusage/data-loader';
 
 export function defaultOptions(): LoadOptions {
 	const paths = getClaudePaths();

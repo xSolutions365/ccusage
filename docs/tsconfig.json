@@ -1,5 +1,5 @@
 {
-	"extends": "./node_modules/ccusage/tsconfig.json",
+	"extends": "./node_modules/@xsolutions365/ccusage/tsconfig.json",
 	"compilerOptions": {
 		"resolveJsonModule": true,
 		"types": ["bun"],

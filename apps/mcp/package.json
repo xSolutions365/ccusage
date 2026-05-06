@@ -57,7 +57,7 @@
 		"@hono/mcp": "catalog:runtime",
 		"@hono/node-server": "catalog:runtime",
 		"@modelcontextprotocol/sdk": "catalog:runtime",
-		"ccusage": "workspace:*",
+		"@xsolutions365/ccusage": "workspace:*",
 		"gunshi": "catalog:runtime",
 		"hono": "catalog:runtime",
 		"nano-spawn": "catalog:runtime",

@@ -8,7 +8,7 @@
  * @module mcp
  */
 
-import type { LoadOptions } from 'ccusage/data-loader';
+import type { LoadOptions } from '@xsolutions365/ccusage/data-loader';
 import { StreamableHTTPTransport } from '@hono/mcp';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
@@ -207,10 +207,11 @@ export function createMcpHttpApp(options?: LoadOptions): Hono {
 	const app = new Hono();
 
 	const mcpServer = createMcpServer(options ?? defaultOptions());
+	const transport = new StreamableHTTPTransport();
+	const connected = mcpServer.connect(transport);
 
 	app.all('/', async (c) => {
-		const transport = new StreamableHTTPTransport();
-		await mcpServer.connect(transport);
+		await connected;
 		return transport.handleRequest(c);
 	});
 

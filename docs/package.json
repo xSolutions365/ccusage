@@ -23,7 +23,7 @@
 		"@types/bun": "catalog:types",
 		"@types/react": "catalog:types",
 		"@typescript/native-preview": "catalog:types",
-		"ccusage": "workspace:^",
+		"@xsolutions365/ccusage": "workspace:^",
 		"eslint": "catalog:lint",
 		"eslint-plugin-format": "catalog:lint",
 		"tinyglobby": "catalog:runtime",
