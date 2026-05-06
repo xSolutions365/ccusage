@@ -673,6 +673,11 @@
 								}
 							},
 							"additionalProperties": false
+						},
+						"setup-cron-job": {
+							"type": "object",
+							"properties": {},
+							"additionalProperties": false
 						}
 					},
 					"additionalProperties": false,

@@ -5,16 +5,36 @@
 	"private": true,
 	"description": "Firebase Cloud Functions backend for storing ccusage statistics in Firestore",
 	"license": "MIT",
+	"exports": {
+		".": "./src/index.ts",
+		"./function": "./src/function.ts",
+		"./package.json": "./package.json"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"publishConfig": {
+		"exports": {
+			".": "./dist/index.js",
+			"./function": "./dist/function.js",
+			"./package.json": "./package.json"
+		}
+	},
 	"engines": {
-		"node": ">=20.19.4"
+		"node": "20"
 	},
 	"scripts": {
 		"build": "tsdown",
+		"deploy:prep": "node scripts/prepare-deploy.mjs",
 		"format": "pnpm run lint --fix",
 		"lint": "eslint --cache .",
 		"prerelease": "pnpm run lint && pnpm run typecheck && pnpm run build",
 		"test": "TZ=UTC vitest",
 		"typecheck": "tsgo --noEmit"
+	},
+	"dependencies": {
+		"@google-cloud/firestore": "^7.0.0",
+		"firebase-functions": "^6.0.0"
 	},
 	"devDependencies": {
 		"@ccusage/internal": "workspace:*",

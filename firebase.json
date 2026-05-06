@@ -1,0 +1,13 @@
+{
+	"functions": [
+		{
+			"source": "firebase-deploy",
+			"codebase": "ccusage-firebase",
+			"ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "*.local"],
+			"predeploy": [
+				"pnpm --filter @ccusage/firebase build",
+				"pnpm --filter @ccusage/firebase deploy:prep"
+			]
+		}
+	]
+}

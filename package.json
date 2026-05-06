@@ -56,6 +56,11 @@
 		"pkg-pr-new": "catalog:release",
 		"vitest": "catalog:testing"
 	},
+	"pnpm": {
+		"overrides": {
+			"jwks-rsa": "^4.0.1"
+		}
+	},
 	"lint-staged": {
 		"*": [
 			"pnpm run format",

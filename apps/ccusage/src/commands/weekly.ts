@@ -72,7 +72,7 @@ export const weeklyCommand = define({
 		// Show debug information if requested
 		if (mergedOptions.debug && !useJson) {
 			const mismatchStats = await detectMismatches(undefined);
-			printMismatchReport(mismatchStats, mergedOptions.debugSamples as number | undefined);
+			printMismatchReport(mismatchStats, mergedOptions.debugSamples);
 		}
 
 		if (useJson) {

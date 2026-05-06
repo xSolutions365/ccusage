@@ -38,10 +38,7 @@ const totalsSchema = v.object({
  * Schema for a single daily usage entry
  */
 export const dailyEntrySchema = v.object({
-	date: v.pipe(
-		v.string(),
-		v.regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format'),
-	),
+	date: v.pipe(v.string(), v.regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format')),
 	inputTokens: v.pipe(v.number(), v.integer(), v.minValue(0)),
 	outputTokens: v.pipe(v.number(), v.integer(), v.minValue(0)),
 	cacheCreationTokens: v.pipe(v.number(), v.integer(), v.minValue(0)),
@@ -77,10 +74,7 @@ export const sessionEntrySchema = v.object({
  * Schema for a single monthly usage entry
  */
 export const monthlyEntrySchema = v.object({
-	month: v.pipe(
-		v.string(),
-		v.regex(/^\d{4}-\d{2}$/, 'Month must be in YYYY-MM format'),
-	),
+	month: v.pipe(v.string(), v.regex(/^\d{4}-\d{2}$/, 'Month must be in YYYY-MM format')),
 	inputTokens: v.pipe(v.number(), v.integer(), v.minValue(0)),
 	outputTokens: v.pipe(v.number(), v.integer(), v.minValue(0)),
 	cacheCreationTokens: v.pipe(v.number(), v.integer(), v.minValue(0)),
@@ -152,10 +146,7 @@ export const monthlyReportSchema = v.object({
  */
 export const blocksReportSchema = v.object({
 	type: v.literal('blocks'),
-	blocks: v.pipe(
-		v.array(blockEntrySchema),
-		v.minLength(1, 'At least one block entry is required'),
-	),
+	blocks: v.pipe(v.array(blockEntrySchema), v.minLength(1, 'At least one block entry is required')),
 });
 
 /**
