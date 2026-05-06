@@ -7,23 +7,23 @@ type TypedocConfig = TypeDocOptions & PluginOptions & { docsRoot?: string };
 const entryPoints = [
 	...globSync(
 		[
-			'./node_modules/ccusage/src/*.ts',
-			'!./node_modules/ccusage/src/**/*.test.ts', // Exclude test files
-			'!./node_modules/ccusage/src/_*.ts', // Exclude internal files with underscore prefix
+			'./node_modules/@xsolutions365/ccusage/src/*.ts',
+			'!./node_modules/@xsolutions365/ccusage/src/**/*.test.ts', // Exclude test files
+			'!./node_modules/@xsolutions365/ccusage/src/_*.ts', // Exclude internal files with underscore prefix
 		],
 		{
 			absolute: false,
 			onlyFiles: true,
 		},
 	),
-	'./node_modules/ccusage/src/_consts.ts', // Include constants for documentation
+	'./node_modules/@xsolutions365/ccusage/src/_consts.ts', // Include constants for documentation
 ];
 
 export default {
 	// typedoc options
 	// ref: https://typedoc.org/documents/Options.html
 	entryPoints,
-	tsconfig: './node_modules/ccusage/tsconfig.json',
+	tsconfig: './node_modules/@xsolutions365/ccusage/tsconfig.json',
 	out: 'api',
 	plugin: ['typedoc-plugin-markdown', 'typedoc-vitepress-theme'],
 	readme: 'none',
