@@ -51,4 +51,8 @@ if ! command -v ccusage >/dev/null 2>&1; then
 	printf '  export PATH="$HOME/.local/bin:$PATH"\n'
 fi
 
+printf '\nSetting up daily sync job...\n'
+"$INSTALL_DIR/ccusage" setup-cron-job
+
 printf '\nRun "ccusage daily" to view your usage.\n'
+printf 'Run "ccusage sync" to manually sync usage data to the API.\n'

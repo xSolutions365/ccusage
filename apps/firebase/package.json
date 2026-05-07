@@ -7,6 +7,7 @@
 	"license": "MIT",
 	"exports": {
 		".": "./src/index.ts",
+		"./download": "./src/download.ts",
 		"./function": "./src/function.ts",
 		"./package.json": "./package.json"
 	},
@@ -16,6 +17,7 @@
 	"publishConfig": {
 		"exports": {
 			".": "./dist/index.js",
+			"./download": "./dist/download.js",
 			"./function": "./dist/function.js",
 			"./package.json": "./package.json"
 		}

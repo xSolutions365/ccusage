@@ -9,38 +9,12 @@ import { log } from '../logger.ts';
 
 const PLIST_LABEL = 'com.ccusage.daily';
 const PLIST_FILENAME = `${PLIST_LABEL}.plist`;
+const BINARY_PATH = join(homedir(), '.local', 'bin', 'ccusage');
 
 /**
- * Get the current macOS username
+ * Generate the launchd plist XML content for macOS
  */
-function getUsername(): string {
-	if (process.env.USER != null && process.env.USER !== '') {
-		return process.env.USER;
-	}
-	try {
-		return execSync('whoami').toString().trim();
-	} catch {
-		log(pc.yellow('Warning: Could not determine username, using "unknown"'));
-		return 'unknown';
-	}
-}
-
-/**
- * Find the path to npx binary
- */
-function getNpxPath(): string {
-	try {
-		return execSync('which npx').toString().trim();
-	} catch {
-		log(pc.yellow('Warning: npx not found in PATH, using fallback /usr/local/bin/npx'));
-		return '/usr/local/bin/npx';
-	}
-}
-
-/**
- * Generate the launchd plist XML content
- */
-function generatePlist(npxPath: string, username: string): string {
+function generatePlist(): string {
 	return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "https://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -49,10 +23,8 @@ function generatePlist(npxPath: string, username: string): string {
 	<string>${PLIST_LABEL}</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>${npxPath}</string>
-		<string>ccusage@latest</string>
-		<string>daily</string>
-		<string>--json</string>
+		<string>${BINARY_PATH}</string>
+		<string>sync</string>
 	</array>
 	<key>StartCalendarInterval</key>
 	<dict>
@@ -62,15 +34,13 @@ function generatePlist(npxPath: string, username: string): string {
 		<integer>0</integer>
 	</dict>
 	<key>StandardOutPath</key>
-	<string>${homedir()}/Library/Logs/ccusage-daily.log</string>
+	<string>${homedir()}/Library/Logs/ccusage-sync.log</string>
 	<key>StandardErrorPath</key>
-	<string>${homedir()}/Library/Logs/ccusage-daily-error.log</string>
+	<string>${homedir()}/Library/Logs/ccusage-sync-error.log</string>
 	<key>EnvironmentVariables</key>
 	<dict>
 		<key>PATH</key>
-		<string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin</string>
-		<key>CCUSAGE_USERNAME</key>
-		<string>${username}</string>
+		<string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:${join(homedir(), '.local', 'bin')}</string>
 	</dict>
 	<key>RunAtLoad</key>
 	<false/>
@@ -79,20 +49,16 @@ function generatePlist(npxPath: string, username: string): string {
 }
 
 /**
- * Install the launchd plist for daily ccusage execution
+ * Install the launchd plist for daily ccusage sync on macOS
  */
-function installLaunchAgent(): void {
-	const username = getUsername();
-	const npxPath = getNpxPath();
+function installMacOSLaunchAgent(): void {
 	const launchAgentsDir = join(homedir(), 'Library', 'LaunchAgents');
 	const plistPath = join(launchAgentsDir, PLIST_FILENAME);
 
-	// Ensure LaunchAgents directory exists
 	if (!existsSync(launchAgentsDir)) {
 		mkdirSync(launchAgentsDir, { recursive: true });
 	}
 
-	// Unload existing plist if present
 	if (existsSync(plistPath)) {
 		try {
 			execSync(`launchctl unload "${plistPath}"`, { stdio: 'ignore' });
@@ -101,11 +67,8 @@ function installLaunchAgent(): void {
 		}
 	}
 
-	// Write the plist file
-	const plistContent = generatePlist(npxPath, username);
-	writeFileSync(plistPath, plistContent, 'utf-8');
+	writeFileSync(plistPath, generatePlist(), 'utf-8');
 
-	// Load the plist
 	try {
 		execSync(`launchctl load "${plistPath}"`);
 	} catch (error) {
@@ -114,27 +77,61 @@ function installLaunchAgent(): void {
 		process.exit(1);
 	}
 
-	log(pc.green('✓ Successfully installed ccusage daily cron job'));
+	log(pc.green('✓ Successfully installed ccusage daily sync job'));
 	log('');
 	log(`  ${pc.bold('Schedule:')} Every day at 9:00 AM`);
-	log(`  ${pc.bold('Username:')} ${username}`);
 	log(`  ${pc.bold('Plist:')} ${plistPath}`);
-	log(`  ${pc.bold('Logs:')} ~/Library/Logs/ccusage-daily.log`);
+	log(`  ${pc.bold('Logs:')} ~/Library/Logs/ccusage-sync.log`);
 	log('');
-	log(pc.dim('The job persists through reboots and runs `npx ccusage@latest daily --json`.'));
 	log(pc.dim(`To uninstall, run: launchctl unload "${plistPath}"`));
+}
+
+/**
+ * Install a crontab entry for daily ccusage sync on Linux
+ */
+function installLinuxCron(): void {
+	const cronEntry = `0 9 * * * ${BINARY_PATH} sync`;
+	const marker = '# ccusage daily sync';
+
+	let existing = '';
+	try {
+		existing = execSync('crontab -l 2>/dev/null', { encoding: 'utf-8' });
+	} catch {
+		// No existing crontab
+	}
+
+	// Remove any existing ccusage entry then append the new one
+	const filtered = existing
+		.split('\n')
+		.filter((line) => !line.includes('ccusage sync') && !line.includes(marker))
+		.join('\n')
+		.trim();
+
+	const updated =
+		filtered !== '' ? `${filtered}\n${marker}\n${cronEntry}\n` : `${marker}\n${cronEntry}\n`;
+
+	execSync(`echo ${JSON.stringify(updated)} | crontab -`);
+
+	log(pc.green('✓ Successfully installed ccusage daily sync job'));
+	log('');
+	log(`  ${pc.bold('Schedule:')} Every day at 9:00 AM (cron)`);
+	log(`  ${pc.bold('Entry:')} ${cronEntry}`);
+	log('');
+	log(pc.dim('To uninstall, run: crontab -e and remove the ccusage entry.'));
 }
 
 export const setupCronCommand = define({
 	name: 'setup-cron-job',
-	description: 'Install a macOS launchd agent to run ccusage daily (persists through reboots)',
+	description: 'Install a system job to sync ccusage data daily (persists through reboots)',
 	args: {},
 	run() {
-		if (process.platform !== 'darwin') {
-			log(pc.red('Error: setup-cron-job is only supported on macOS'));
+		if (process.platform === 'darwin') {
+			installMacOSLaunchAgent();
+		} else if (process.platform === 'linux') {
+			installLinuxCron();
+		} else {
+			log(pc.red('Error: setup-cron-job is only supported on macOS and Linux'));
 			process.exit(1);
 		}
-
-		installLaunchAgent();
 	},
 });

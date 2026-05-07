@@ -7,6 +7,7 @@ const pkgDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = join(pkgDir, '..', '..', 'firebase-deploy');
 
 mkdirSync(outDir, { recursive: true });
+execSync(`rm -rf ${outDir}/dist`);
 execSync(`cp -r ${join(pkgDir, 'dist')} ${outDir}/dist`);
 
 const pkg = JSON.parse(readFileSync(join(pkgDir, 'package.json'), 'utf8'));

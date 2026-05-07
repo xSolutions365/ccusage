@@ -1,4 +1,3 @@
-import { Buffer } from 'node:buffer';
 import { Firestore } from '@google-cloud/firestore';
 import { defineSecret } from 'firebase-functions/params';
 import { onRequest } from 'firebase-functions/v2/https';
@@ -9,7 +8,7 @@ const githubPat = defineSecret('GITHUB_DOWNLOAD_PAT');
 const VALID_PLATFORMS = new Set(['darwin-arm64', 'darwin-x64', 'linux-arm64', 'linux-x64']);
 
 export const download = onRequest(
-	{ invoker: 'public', secrets: [githubPat], memory: '256MiB', timeoutSeconds: 60 },
+	{ invoker: 'public', secrets: [githubPat], memory: '256MiB', timeoutSeconds: 30 },
 	async (req, res) => {
 		const query = req.query as Record<string, string | undefined>;
 		const { token, platform } = query;
@@ -51,7 +50,9 @@ export const download = onRequest(
 			return;
 		}
 
-		const release = (await releaseRes.json()) as { assets: Array<{ name: string; url: string }> };
+		const release = (await releaseRes.json()) as {
+			assets: Array<{ name: string; browser_download_url: string }>;
+		};
 		const assetName = `ccusage-${platform}`;
 		const asset = release.assets.find((a) => a.name === assetName);
 
@@ -60,22 +61,6 @@ export const download = onRequest(
 			return;
 		}
 
-		const binaryRes = await fetch(asset.url, {
-			headers: {
-				Authorization: `Bearer ${pat}`,
-				Accept: 'application/octet-stream',
-				'User-Agent': 'ccusage-installer',
-			},
-		});
-
-		if (!binaryRes.ok) {
-			res.status(502).json({ error: 'Failed to download binary from GitHub' });
-			return;
-		}
-
-		const buffer = await binaryRes.arrayBuffer();
-		res.setHeader('Content-Type', 'application/octet-stream');
-		res.setHeader('Content-Disposition', 'attachment; filename="ccusage"');
-		res.status(200).send(Buffer.from(buffer));
+		res.redirect(302, asset.browser_download_url);
 	},
 );

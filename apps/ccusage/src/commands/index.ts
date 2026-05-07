@@ -7,6 +7,7 @@ import { monthlyCommand } from './monthly.ts';
 import { sessionCommand } from './session.ts';
 import { setupCronCommand } from './setup-cron.ts';
 import { statuslineCommand } from './statusline.ts';
+import { syncCommand } from './sync.ts';
 import { weeklyCommand } from './weekly.ts';
 
 // Re-export all commands for easy importing
@@ -17,6 +18,7 @@ export {
 	sessionCommand,
 	setupCronCommand,
 	statuslineCommand,
+	syncCommand,
 	weeklyCommand,
 };
 
@@ -30,6 +32,7 @@ export const subCommandUnion = [
 	['session', sessionCommand],
 	['blocks', blocksCommand],
 	['statusline', statuslineCommand],
+	['sync', syncCommand],
 	['setup-cron-job', setupCronCommand],
 ] as const;
 
