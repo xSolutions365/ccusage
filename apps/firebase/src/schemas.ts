@@ -161,8 +161,6 @@ export const usageReportRequestSchema = v.object({
 			'submittedAt must be a valid ISO timestamp',
 		),
 	),
-	/** Identifier for the user or machine submitting the report */
-	submitterId: v.pipe(v.string(), v.minLength(1, 'Submitter ID cannot be empty')),
 	/** The usage report data - one of daily, session, monthly, or blocks */
 	report: v.variant('type', [
 		dailyReportSchema,
@@ -191,7 +189,6 @@ if (import.meta.vitest != null) {
 		it('validates a valid daily report', () => {
 			const validPayload = {
 				submittedAt: '2025-05-01T10:00:00Z',
-				submitterId: 'user-123',
 				report: {
 					type: 'daily',
 					daily: [
@@ -234,7 +231,6 @@ if (import.meta.vitest != null) {
 		it('validates a valid session report', () => {
 			const validPayload = {
 				submittedAt: '2025-05-01T10:00:00Z',
-				submitterId: 'user-456',
 				report: {
 					type: 'session',
 					sessions: [
@@ -279,7 +275,6 @@ if (import.meta.vitest != null) {
 		it('validates a valid monthly report', () => {
 			const validPayload = {
 				submittedAt: '2025-05-01T10:00:00Z',
-				submitterId: 'user-789',
 				report: {
 					type: 'monthly',
 					monthly: [
@@ -321,7 +316,6 @@ if (import.meta.vitest != null) {
 		it('validates a valid blocks report', () => {
 			const validPayload = {
 				submittedAt: '2025-05-01T10:00:00Z',
-				submitterId: 'user-abc',
 				report: {
 					type: 'blocks',
 					blocks: [
@@ -357,7 +351,6 @@ if (import.meta.vitest != null) {
 
 		it('rejects missing submittedAt', () => {
 			const invalid = {
-				submitterId: 'user-123',
 				report: {
 					type: 'daily',
 					daily: [
@@ -391,7 +384,6 @@ if (import.meta.vitest != null) {
 		it('rejects invalid date format in daily entry', () => {
 			const invalid = {
 				submittedAt: '2025-05-01T10:00:00Z',
-				submitterId: 'user-123',
 				report: {
 					type: 'daily',
 					daily: [
@@ -425,7 +417,6 @@ if (import.meta.vitest != null) {
 		it('rejects negative token counts', () => {
 			const invalid = {
 				submittedAt: '2025-05-01T10:00:00Z',
-				submitterId: 'user-123',
 				report: {
 					type: 'daily',
 					daily: [
@@ -456,44 +447,9 @@ if (import.meta.vitest != null) {
 			expect(result.success).toBe(false);
 		});
 
-		it('rejects empty submitterId', () => {
-			const invalid = {
-				submittedAt: '2025-05-01T10:00:00Z',
-				submitterId: '',
-				report: {
-					type: 'daily',
-					daily: [
-						{
-							date: '2025-05-01',
-							inputTokens: 0,
-							outputTokens: 0,
-							cacheCreationTokens: 0,
-							cacheReadTokens: 0,
-							totalTokens: 0,
-							totalCost: 0,
-							modelsUsed: [],
-							modelBreakdowns: [],
-						},
-					],
-					totals: {
-						inputTokens: 0,
-						outputTokens: 0,
-						cacheCreationTokens: 0,
-						cacheReadTokens: 0,
-						totalCost: 0,
-						totalTokens: 0,
-					},
-				},
-			};
-
-			const result = v.safeParse(usageReportRequestSchema, invalid);
-			expect(result.success).toBe(false);
-		});
-
 		it('rejects invalid report type', () => {
 			const invalid = {
 				submittedAt: '2025-05-01T10:00:00Z',
-				submitterId: 'user-123',
 				report: {
 					type: 'invalid',
 					data: [],
@@ -507,7 +463,6 @@ if (import.meta.vitest != null) {
 		it('rejects empty daily array', () => {
 			const invalid = {
 				submittedAt: '2025-05-01T10:00:00Z',
-				submitterId: 'user-123',
 				report: {
 					type: 'daily',
 					daily: [], // empty - must have at least 1
@@ -529,7 +484,6 @@ if (import.meta.vitest != null) {
 		it('rejects non-integer token values', () => {
 			const invalid = {
 				submittedAt: '2025-05-01T10:00:00Z',
-				submitterId: 'user-123',
 				report: {
 					type: 'daily',
 					daily: [
@@ -563,7 +517,6 @@ if (import.meta.vitest != null) {
 		it('rejects invalid month format in monthly entry', () => {
 			const invalid = {
 				submittedAt: '2025-05-01T10:00:00Z',
-				submitterId: 'user-123',
 				report: {
 					type: 'monthly',
 					monthly: [
@@ -596,7 +549,6 @@ if (import.meta.vitest != null) {
 		it('rejects empty model name in modelBreakdowns', () => {
 			const invalid = {
 				submittedAt: '2025-05-01T10:00:00Z',
-				submitterId: 'user-123',
 				report: {
 					type: 'daily',
 					daily: [

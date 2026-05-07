@@ -1,0 +1,9 @@
+{
+	"name": "@ccusage/web",
+	"version": "18.0.11",
+	"private": true,
+	"description": "Web installer for ccusage",
+	"scripts": {
+		"deploy": "firebase deploy --only hosting"
+	}
+}

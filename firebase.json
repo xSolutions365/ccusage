@@ -9,5 +9,12 @@
 				"pnpm --filter @ccusage/firebase deploy:prep"
 			]
 		}
-	]
+	],
+	"hosting": {
+		"public": "apps/web/public",
+		"ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+	},
+	"firestore": {
+		"rules": "firestore.rules"
+	}
 }

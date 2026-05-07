@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>ccusage — Install</title>
+		<style>
+			*,
+			*::before,
+			*::after {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+
+			:root {
+				--bg: #ffffff;
+				--surface: #f5f5f5;
+				--border: #e0e0e0;
+				--text: #1a1a1a;
+				--muted: #666666;
+				--accent: #0066cc;
+				--accent-hover: #0052a3;
+				--danger: #cc2200;
+				--danger-hover: #a81c00;
+				--code-bg: #1e1e1e;
+				--code-text: #d4d4d4;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				:root {
+					--bg: #121212;
+					--surface: #1e1e1e;
+					--border: #333333;
+					--text: #e8e8e8;
+					--muted: #999999;
+					--accent: #4da6ff;
+					--accent-hover: #80bdff;
+					--danger: #ff6b55;
+					--danger-hover: #ff8c7a;
+					--code-bg: #0d0d0d;
+					--code-text: #d4d4d4;
+				}
+			}
+
+			body {
+				font-family:
+					-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+				background: var(--bg);
+				color: var(--text);
+				min-height: 100vh;
+				display: flex;
+				align-items: flex-start;
+				justify-content: center;
+				padding: 2rem 1rem;
+			}
+
+			.container {
+				width: 100%;
+				max-width: 600px;
+			}
+
+			h1 {
+				font-size: 1.75rem;
+				font-weight: 700;
+				margin-bottom: 0.25rem;
+			}
+
+			.tagline {
+				color: var(--muted);
+				margin-bottom: 2rem;
+				font-size: 0.95rem;
+			}
+
+			.card {
+				background: var(--surface);
+				border: 1px solid var(--border);
+				border-radius: 8px;
+				padding: 1.5rem;
+				margin-bottom: 1rem;
+			}
+
+			.card h2 {
+				font-size: 1rem;
+				font-weight: 600;
+				margin-bottom: 1rem;
+				color: var(--muted);
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+				font-size: 0.75rem;
+			}
+
+			button {
+				cursor: pointer;
+				border: none;
+				border-radius: 6px;
+				padding: 0.5rem 1rem;
+				font-size: 0.9rem;
+				font-family: inherit;
+				font-weight: 500;
+				transition: background 0.15s;
+			}
+
+			.btn-primary {
+				background: var(--accent);
+				color: #fff;
+			}
+			.btn-primary:hover {
+				background: var(--accent-hover);
+			}
+
+			.btn-secondary {
+				background: transparent;
+				border: 1px solid var(--border);
+				color: var(--text);
+			}
+			.btn-secondary:hover {
+				background: var(--border);
+			}
+
+			.btn-danger {
+				background: transparent;
+				border: 1px solid var(--danger);
+				color: var(--danger);
+				font-size: 0.8rem;
+				padding: 0.35rem 0.75rem;
+			}
+			.btn-danger:hover {
+				background: var(--danger);
+				color: #fff;
+			}
+
+			.sign-in-section {
+				text-align: center;
+				padding: 2rem 0;
+			}
+
+			.sign-in-section p {
+				color: var(--muted);
+				margin-bottom: 1.25rem;
+				font-size: 0.95rem;
+			}
+
+			.github-btn {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.5rem;
+				background: #24292e;
+				color: #fff;
+				padding: 0.6rem 1.25rem;
+				border-radius: 6px;
+				font-size: 0.95rem;
+				font-weight: 500;
+				cursor: pointer;
+				border: none;
+				font-family: inherit;
+				transition: background 0.15s;
+			}
+			.github-btn:hover {
+				background: #1a1f24;
+			}
+
+			.github-icon {
+				width: 20px;
+				height: 20px;
+				fill: currentColor;
+			}
+
+			.command-wrapper {
+				position: relative;
+			}
+
+			pre {
+				background: var(--code-bg);
+				color: var(--code-text);
+				padding: 1rem;
+				border-radius: 6px;
+				font-size: 0.8rem;
+				font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+				overflow-x: auto;
+				white-space: pre-wrap;
+				word-break: break-all;
+				margin-bottom: 0.75rem;
+			}
+
+			.actions {
+				display: flex;
+				gap: 0.5rem;
+				flex-wrap: wrap;
+			}
+
+			.user-info {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				margin-bottom: 1.25rem;
+			}
+
+			.user-info .name {
+				font-weight: 600;
+			}
+
+			.user-info .email {
+				font-size: 0.85rem;
+				color: var(--muted);
+			}
+
+			a {
+				color: var(--accent);
+				text-decoration: none;
+				font-size: 0.85rem;
+			}
+			a:hover {
+				text-decoration: underline;
+			}
+
+			.loading {
+				text-align: center;
+				padding: 3rem 0;
+				color: var(--muted);
+			}
+
+			.spinner {
+				display: inline-block;
+				width: 24px;
+				height: 24px;
+				border: 2px solid var(--border);
+				border-top-color: var(--accent);
+				border-radius: 50%;
+				animation: spin 0.7s linear infinite;
+				margin-bottom: 0.75rem;
+			}
+
+			@keyframes spin {
+				to {
+					transform: rotate(360deg);
+				}
+			}
+
+			.notice {
+				font-size: 0.8rem;
+				color: var(--muted);
+				margin-top: 0.5rem;
+			}
+
+			#copy-feedback {
+				font-size: 0.8rem;
+				color: var(--muted);
+				margin-left: 0.25rem;
+				opacity: 0;
+				transition: opacity 0.2s;
+			}
+			#copy-feedback.show {
+				opacity: 1;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>ccusage</h1>
+			<p class="tagline">Usage analytics for Claude Code</p>
+
+			<div id="loading" class="loading">
+				<div class="spinner"></div>
+				<div>Loading…</div>
+			</div>
+
+			<div id="signed-out" style="display: none">
+				<div class="card sign-in-section">
+					<p>Sign in with GitHub to get your personal install token.</p>
+					<button class="github-btn" id="btn-signin">
+						<svg class="github-icon" viewBox="0 0 24 24" aria-hidden="true">
+							<path
+								d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+							/>
+						</svg>
+						Sign in with GitHub
+					</button>
+				</div>
+			</div>
+
+			<div id="signed-in" style="display: none">
+				<div class="card">
+					<h2>Signed in as</h2>
+					<div class="user-info">
+						<div>
+							<div class="name" id="display-name"></div>
+							<div class="email" id="display-email"></div>
+						</div>
+						<a href="#" id="btn-signout">Sign out</a>
+					</div>
+				</div>
+
+				<div class="card">
+					<h2>Install command</h2>
+					<div class="command-wrapper">
+						<pre id="install-command">Generating token…</pre>
+					</div>
+					<div class="actions">
+						<button class="btn-primary" id="btn-copy">Copy</button>
+						<span id="copy-feedback">Copied!</span>
+						<button class="btn-danger" id="btn-regen">Regenerate token</button>
+					</div>
+					<p class="notice">
+						Run this in your terminal. After installing, run <code>ccusage submit</code> to sync
+						your stats.
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+		<script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+		<script src="/__/firebase/10.13.2/firebase-firestore-compat.js"></script>
+		<script src="/__/firebase/init.js"></script>
+		<script>
+			const HOSTING_URL = 'https://dan-llewellyn-test.web.app';
+
+			const auth = firebase.auth();
+			const db = firebase.firestore();
+
+			const elLoading = document.getElementById('loading');
+			const elSignedOut = document.getElementById('signed-out');
+			const elSignedIn = document.getElementById('signed-in');
+			const elDisplayName = document.getElementById('display-name');
+			const elDisplayEmail = document.getElementById('display-email');
+			const elInstallCmd = document.getElementById('install-command');
+			const elCopyFeedback = document.getElementById('copy-feedback');
+
+			function showLoading() {
+				elLoading.style.display = '';
+				elSignedOut.style.display = 'none';
+				elSignedIn.style.display = 'none';
+			}
+
+			function showSignedOut() {
+				elLoading.style.display = 'none';
+				elSignedOut.style.display = '';
+				elSignedIn.style.display = 'none';
+			}
+
+			function showSignedIn(user, ghUsername) {
+				elLoading.style.display = 'none';
+				elSignedOut.style.display = 'none';
+				elSignedIn.style.display = '';
+				elDisplayName.textContent = ghUsername || user.displayName || 'GitHub user';
+				elDisplayEmail.textContent = user.email || '';
+			}
+
+			function buildCommand(token) {
+				return `curl -fsSL "${HOSTING_URL}/install.sh" | sh -s -- "${token}"`;
+			}
+
+			async function getOrCreateToken(user, ghUsername) {
+				const storageKey = 'ccusage_token_' + user.uid;
+				const existingToken = localStorage.getItem(storageKey);
+
+				if (existingToken) {
+					try {
+						const doc = await db.collection('tokens').doc(existingToken).get();
+						if (doc.exists) {
+							return existingToken;
+						}
+					} catch (err) {
+						// token not accessible, fall through to create new one
+					}
+					localStorage.removeItem(storageKey);
+				}
+
+				return createNewToken(user, ghUsername);
+			}
+
+			async function createNewToken(user, ghUsername) {
+				const token = crypto.randomUUID();
+				const storageKey = 'ccusage_token_' + user.uid;
+
+				await db
+					.collection('tokens')
+					.doc(token)
+					.set({
+						uid: user.uid,
+						githubUsername: ghUsername || user.displayName || '',
+						createdAt: new Date().toISOString(),
+					});
+
+				localStorage.setItem(storageKey, token);
+				return token;
+			}
+
+			async function deleteToken(user) {
+				const storageKey = 'ccusage_token_' + user.uid;
+				const token = localStorage.getItem(storageKey);
+				if (token) {
+					try {
+						await db.collection('tokens').doc(token).delete();
+					} catch (err) {
+						// ignore — may already be gone
+					}
+					localStorage.removeItem(storageKey);
+				}
+			}
+
+			async function handleSignedIn(user, ghUsername) {
+				showSignedIn(user, ghUsername);
+				elInstallCmd.textContent = 'Generating token…';
+
+				try {
+					const token = await getOrCreateToken(user, ghUsername);
+					elInstallCmd.textContent = buildCommand(token);
+				} catch (err) {
+					elInstallCmd.textContent = 'Error generating token: ' + err.message;
+				}
+			}
+
+			auth.onAuthStateChanged(async (user) => {
+				if (!user) {
+					showSignedOut();
+					return;
+				}
+
+				const ghUsernameKey = 'ccusage_gh_' + user.uid;
+				const ghUsername = localStorage.getItem(ghUsernameKey) || user.displayName || '';
+				await handleSignedIn(user, ghUsername);
+			});
+
+			document.getElementById('btn-signin').addEventListener('click', async () => {
+				const provider = new firebase.auth.GithubAuthProvider();
+				try {
+					const result = await auth.signInWithPopup(provider);
+					const ghUsername =
+						(result.additionalUserInfo && result.additionalUserInfo.username) ||
+						result.user.displayName ||
+						'';
+					if (ghUsername) {
+						localStorage.setItem('ccusage_gh_' + result.user.uid, ghUsername);
+					}
+					await handleSignedIn(result.user, ghUsername);
+				} catch (err) {
+					alert('Sign-in failed: ' + err.message);
+				}
+			});
+
+			document.getElementById('btn-signout').addEventListener('click', async (e) => {
+				e.preventDefault();
+				await auth.signOut();
+				showSignedOut();
+			});
+
+			document.getElementById('btn-copy').addEventListener('click', () => {
+				const text = elInstallCmd.textContent;
+				navigator.clipboard.writeText(text).then(() => {
+					elCopyFeedback.classList.add('show');
+					setTimeout(() => elCopyFeedback.classList.remove('show'), 2000);
+				});
+			});
+
+			document.getElementById('btn-regen').addEventListener('click', async () => {
+				const user = auth.currentUser;
+				if (!user) return;
+				elInstallCmd.textContent = 'Regenerating…';
+				try {
+					await deleteToken(user);
+					const ghUsernameKey = 'ccusage_gh_' + user.uid;
+					const ghUsername = localStorage.getItem(ghUsernameKey) || user.displayName || '';
+					const token = await createNewToken(user, ghUsername);
+					elInstallCmd.textContent = buildCommand(token);
+				} catch (err) {
+					elInstallCmd.textContent = 'Error: ' + err.message;
+				}
+			});
+		</script>
+	</body>
+</html>

@@ -57,7 +57,6 @@ if (import.meta.vitest != null) {
 		it('accepts valid daily report', () => {
 			const body = {
 				submittedAt: '2025-05-01T10:00:00Z',
-				submitterId: 'user-123',
 				report: {
 					type: 'daily',
 					daily: [
