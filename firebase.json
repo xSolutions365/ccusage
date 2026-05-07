@@ -12,7 +12,8 @@
 	],
 	"hosting": {
 		"public": "apps/web/public",
-		"ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+		"ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+		"rewrites": [{ "source": "/api/download", "function": "download" }]
 	},
 	"firestore": {
 		"rules": "firestore.rules"

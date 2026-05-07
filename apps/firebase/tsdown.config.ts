@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsdown';
 
 export default defineConfig({
-	entry: ['src/index.ts', 'src/function.ts'],
+	entry: ['src/index.ts', 'src/function.ts', 'src/download.ts'],
 	outDir: 'dist',
 	format: 'esm',
 	external: ['@google-cloud/firestore', 'firebase-functions'],

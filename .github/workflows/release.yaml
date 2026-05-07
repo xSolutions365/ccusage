@@ -1,32 +1,46 @@
-name: npm publish
+name: Release
 
 on:
   push:
     tags:
-      - '*'
+      - 'v*'
+
+permissions:
+  contents: write
 
 jobs:
-  npm:
+  build-binaries:
     runs-on: ubuntu-24.04-arm
-    timeout-minutes: 10
-    permissions:
-      contents: read
-      id-token: write
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-nix
-      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+      - name: Build ccusage bundle
+        run: nix develop --command pnpm --filter @xsolutions365/ccusage build
+      - uses: oven-sh/setup-bun@v2
         with:
-          registry-url: 'https://registry.npmjs.org'
-          node-version: lts/*
-      - run: nix develop --command pnpm --filter='./apps/**' publish --provenance --no-git-checks --access public
+          bun-version: latest
+      - name: Compile binaries
+        run: |
+          mkdir -p binaries
+          for target in darwin-arm64 darwin-x64 linux-arm64 linux-x64; do
+            echo "Building ccusage-${target}..."
+            bun build apps/ccusage/dist/index.js \
+              --compile \
+              --target=bun-${target} \
+              --outfile binaries/ccusage-${target}
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binaries
+          path: binaries/
 
   release:
-    needs:
-      - npm
+    needs: build-binaries
     runs-on: ubuntu-24.04-arm
+    timeout-minutes: 15
     permissions:
       contents: write
     steps:
@@ -34,6 +48,15 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-nix
-      - run: nix develop --command pnpm changelogithub
+      - uses: actions/download-artifact@v4
+        with:
+          name: binaries
+          path: binaries
+      - name: Create release with changelog
+        run: nix develop --command pnpm changelogithub
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload binaries to release
+        run: gh release upload ${{ github.ref_name }} binaries/* --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
